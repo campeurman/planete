@@ -2,6 +2,7 @@
 
 session_start();
 require "conf/global.php";
+//var_dump($_SESSION);
 
 spl_autoload_register(function ($class) {
     if(file_exists("models/$class.php")){
@@ -11,32 +12,24 @@ spl_autoload_register(function ($class) {
 
 $page = isset($_REQUEST["page"])? $_REQUEST["page"] : "home";
 
-	switch ($page) {
-		case "home" :
-			$include = showHome();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
-		break;
-		case "insert_user" :
-			insertUser(); //renvoie sur fonction insertUser qui elle meme integre l'utilisateur à condition
-		break;
-		case "connect_user" :
-			connectUser();//renvoie sur fonction connectUser qui elle meme creer un objet utilisateur
-		break;
-		case "revue" :
-			$include = showRevue();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
-		break;
-		case "membre" :
-			$include = showMembre();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
-		break;
-		case "religion":
-			$include = ["template"=>"views/religion.php"];
-			break;
-		
-			default : $include = showHome();//sinon renvoie sur fonction showhome qui elle meme renvoie sur la page home
-		}
+switch ($page) {
+	case "home" : $include = showHome();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
+	break;
+	case "insert_user" : insertUser(); //renvoie sur fonction insertUser qui elle meme integre l'utilisateur à condition
+	break;
+	case "connect_user" : connectUser();//renvoie sur fonction connectUser qui elle meme creer un objet utilisateur
+	break;
+	case "revue" : $include = showRevue();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
+	break;
+	case "membre" : $include = showMembre();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
+	break;
+	case "religion": $include = ["template"=>"views/religion.php"];
+	break;
+	default : $include = showHome();//sinon renvoie sur fonction showhome qui elle meme renvoie sur la page home
+}
 
 
 function showHome(): array {
-	
     return ["template"=>"views/home.php"];//elle meme renvoie sur la page home
 }
 
@@ -53,67 +46,45 @@ function insertUser(){
 }
 
 function connectUser() {
-	// if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && $_POST["password"] == $_POST["password2"]) && 
-	// preg_match ( "# ^ [a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ] * $ #" , $_POST [ 'pseudo' ]) &&
-	//  preg_match ( "# ^ [a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ] * $ #" , $_POST [ 'password' ])){ 
+	if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && $_POST["password"] == $_POST["password2"] && preg_match("#^[a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#" , $_POST['pseudo']) && preg_match("#^[a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#", $_POST['password'])) { 
 		$user = new Utilisateur();
 		$user-> setPseudo($_POST['pseudo']);
 		$user-> setPassword($_POST['password']);
 		$reponse = $user->verify_user();
-		var_dump($reponse);
-		if ($reponse && password_verify($_POST['password'],$reponse['password'])){
-			$_SESSION['id'] = $reponse['id_utilisateur'];
+		
+		if ($reponse && password_verify($_POST['password'],$reponse['password'])) {
+			$_SESSION['id'] = $reponse['id'];
 			$_SESSION['pseudo']= $reponse['pseudo'];
-			
-			
 			header('Location:index.php?page=membre');
 		}else {
-			
 			header('Location:index.php');
-			
 		}
-		// }
+	}
 }
 	
-
-    function showRevue() {
-		
-		$user = new Revue();//creer un nouveau manga
-		$user->setCo_revue($_GET["co_revue"]);
-		$user->selectById();
-		var_dump($datas);
-		$datas['revue'] = $user;
-		var_dump($datas['revue']);
-		$user->selectByRevue();
-		var_dump($datas);
-		$datas['articles'] = $datas;
-		var_dump($datas['articles']);
+function showRevue() {
 	
-		
+	$datas = [];
+	$revue = new Revue();
+	$revue->setCo_revue($_GET["co_revue"]);
+	$revue->selectById();
+	$datas['revue'] = clone $revue;
 
-		
-		 return ["template"=>"views/home.php", "datas" => $datas];
+	return ["template"=>"views/home.php", "datas" => $datas];
+}
 	
-		}
-		
-		function showMembre() {
+function showMembre() {
 
-			// if(!isset($_SESSION["user"])) {
-			// 	header("Location:home");
-			$user = new Revue();
-			$datas = [];
-			$datas["revues"] = $user->selectAll();
-			
-			
-			return ["template" => "views/membre.php", "datas" => $datas];
-		}
-		
-	// }
+	if(!isset($_SESSION["id"])) {
+		header("Location:index.php");
+	}
+	$user = new Revue();
+	$datas = [];
+	$datas["revues"] = $user->selectAll();
 	
-		
-
-		
-		?>
+	return ["template" => "views/membre.php", "datas" => $datas];
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
