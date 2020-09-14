@@ -41,21 +41,17 @@ function showHome(): array {
 }
 
 function insertUser(){
-var_dump($_POST["pseudo"]);
-	// if(!empty($_POST["pseudo"]) && (!empty($_POST["password"]) && ($_POST["password"] == $_POST["password2"]) && 
-	// preg_match ( "# ^ [a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ] * $ #" , $_POST [ 'pseudo' ]) &&
-	//  preg_match ( "# ^ [a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ] * $ #" , $_POST [ 'password' ])){
+	
+	if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && ($_POST["password"] == $_POST["password2"]) && preg_match ("#^[a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#" , $_POST['pseudo']) && preg_match ("#^[a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#" , $_POST['password'])) {
 		$user = new Utilisateur(); //creer un nouvelle utilisateur
 		$user->setPseudo($_POST["pseudo"]);//avec son pseudo
 		$user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));//avec son password et crypter le password
-		var_dump($user);
 		$user->insert();
-		var_dump($user);
-		// header('Location:index.php');//renvoie sur l'index
-	
-// }
-	 header('Location:index.php');//renvoie sur l'index
+		header('Location:index.php');//renvoie sur l'index
+	}
+	header('Location:index.php');//renvoie sur l'index
 }
+
 function connectUser() {
 	// if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && $_POST["password"] == $_POST["password2"]) && 
 	// preg_match ( "# ^ [a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ] * $ #" , $_POST [ 'pseudo' ]) &&
@@ -122,7 +118,7 @@ function connectUser() {
 <!DOCTYPE html>
 <html lang="fr">
 		<head>
-			<title>japon</title>
+			<title>Planete</title>
 			<meta charset="utf-8">
 			<link rel="stylesheet" type="text/css" href="style.css">
         </head>
