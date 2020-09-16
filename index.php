@@ -71,7 +71,7 @@ function showRevue() {
 	$datas['revue'] = clone $revue;
 	$article = new Article();
 	$article->setCo_revue($_GET["co_revue"]);
-	$article->selectitre();
+	$art = $article->selectitre();
 	$datas['article'] = $art;
 	var_dump($datas['article']);
 	return ["template"=>"views/home.php", "datas" => $datas];

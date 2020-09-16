@@ -70,13 +70,12 @@ class Article extends DbConnect {
         $this->personne_id = $personne_id;
     }
 
-
     public function selectitre(){
         $query = "SELECT article.num_article, article.art_page, article.art_titre FROM article  WHERE  co_revue = :co_revue  ;";
             $result = $this->pdo->prepare($query);
             $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
             $result->execute();
-            $art = $result->fetchall();
+            $art = $result->fetchAll();
             var_dump($art);
             // $data=[];
             // foreach($art as $elem) {//et transforme en tableau d'objet puis le retourne
