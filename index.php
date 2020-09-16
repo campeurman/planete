@@ -70,7 +70,7 @@ function showRevue() {
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
 
-	return ["template"=>"views/home.php", "datas" => $datas];
+	return ["template"=>"views/revue.php", "datas" => $datas];
 }
 	
 function showMembre() {
@@ -78,10 +78,9 @@ function showMembre() {
 	if(!isset($_SESSION["id"])) {
 		header("Location:index.php");
 	}
-	$user = new Revue();
+	$revue = new Revue();
 	$datas = [];
-	$datas["revues"] = $user->selectAll();
-	
+	$datas["revues"] = $revue->selectAll();
 	return ["template" => "views/membre.php", "datas" => $datas];
 }
 ?>
@@ -96,16 +95,24 @@ function showMembre() {
         <body>
             
 		<header id="entete">
-            <img src="image/planete-logo.png"  alt="logo"><img src="image/planete-background-blancvert.jpg" id="flag" alt="logo">
+            <img src="image/planete-logo.png" alt="logo"><img src="image/planete-background-blancvert.jpg" id="flag" alt="logo">
         </header>
 		<div id="encadre">
-        <div id="menu"><ul><li>Accueil</li><li>la revue planete</li><li>le nouveau planete</li><li>le dictionnaire des a</li></ul></div>
-		<?php require $include["template"]; ?>
-        </div>
-			  
-			
-			<script type="text/javascript" src="slid.js"></script>
-			
-	    </body>
+			<div id="menu">
+				<ul>
+					<li><a href="index.php?page=home">Accueil</a></li>
+					<li><a href="index.php?page=membre">La revue planete</a></li>
+					<li><a href="index.php?page=">Le nouveau planete</a></li>
+					<li><a href="index.php?page=">Le dictionnaire des a</a></li>
+				</ul>
+			</div>
+			<?php require $include["template"]; ?>
+		</div>
+		
+		<? if(isset($_SESSION["id"]) && isset($_SESSION["pseudo"])): ?>
+			<footer id="admin"><a href="">Espace Admin</a></footer>
+		<? endif ?>
+		<script type="text/javascript" src="slid.js"></script>
+	</body>
 </html>
 

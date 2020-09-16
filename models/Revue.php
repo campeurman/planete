@@ -136,16 +136,14 @@ class Revue extends DbConnect {
         $this->per_titre = $per_titre;
     }
   
+    function selectAll() {
+        $query = "SELECT * FROM revue;";
+        $result = $this->pdo->prepare($query);
+        $result->execute();
+        $datas = $result->fetchAll();
+        return $datas;
+    }
 
-
-         function selectAll() {
-            $query = "SELECT * FROM revue;";
-            $result = $this->pdo->prepare($query);
-            $result->execute();
-            $datas = $result->fetchall();
-
-            return $datas;
-         }
          function insert(){
 
          }
@@ -156,12 +154,10 @@ class Revue extends DbConnect {
             $result->execute();
             $datas = $result->fetchall();
             
-          
             $this->setRev_numero($datas['0']['rev_numero']);
             $this->setRev_moiscouverts($datas['0']['rev_moiscouverts']);
             $this->setRev_dateparution($datas['0']['rev_dateparution']);
             $this->setRev_couv($datas['0']['rev_couv']);
-            var_dump($this);
             
             return $this;
             
@@ -182,13 +178,13 @@ class Revue extends DbConnect {
                 $article->setArt_titre($elem["art_titre"]);
                 $article->setPersonne_id($elem["personne_id"]);
                 
-
                 array_push($datas, $article);
             }
 
             var_dump($datas);
             return $datas;
         }
+        
         public function selectByRubrique() {
             $query = "SELECT rub_nom FROM rubrique WHERE  rubrique_id IN (:rubrique_id)";
             $result = $this->pdo->prepare($query);
@@ -197,22 +193,20 @@ class Revue extends DbConnect {
             $datas = $result->fetchall();
             $i=1;
            
-            
             var_dump($datas);
             
             return $this;
         }
 
 
-         public function selectByStyle(){
+        public function selectByStyle(){
             $query = "SELECT * FROM genre WHERE  style = :style;";
             $result = $this->pdo->prepare($query);
             $result->bindValue(":style",$this->style,PDO::PARAM_STR);
             $result->execute();
             $datas = $result->fetchall();
-            $this->setId_genre($datas['0']['id_genre']);
+            //$this->setId_genre($datas['0']['id_genre']);
 
-            
             return $this;
             
         }
@@ -223,7 +217,7 @@ class Revue extends DbConnect {
             $result->bindValue("numero", $this->id_bouton, PDO::PARAM_INT);
             $result->execute();
             $datas = $result->fetch();
-            $this->setcontenu($datas['contenu']);
+            //$this->setcontenu($datas['contenu']);
 
 
         }
