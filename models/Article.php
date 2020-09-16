@@ -69,6 +69,33 @@ class Article extends DbConnect {
      public function setPersonne_id(int $personne_id) {
         $this->personne_id = $personne_id;
     }
+
+
+    public function selectitre(){
+        $query = "SELECT article.num_article, article.art_page, article.art_titre FROM article  WHERE  co_revue = :co_revue  ;";
+            $result = $this->pdo->prepare($query);
+            $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+            $result->execute();
+            $art = $result->fetchall();
+            var_dump($art);
+            // $data=[];
+            // foreach($art as $elem) {//et transforme en tableau d'objet puis le retourne
+            //     $article = new Revue();
+            //     $article->setNum_article($elem["num_article"]);
+            //     $article->setArt_page($elem["art_page"]);
+            //     $article->setArt_titre($elem["art_titre"]);
+          
+                
+
+            //     array_push($data, $article);
+            // }
+
+            var_dump($art);
+            return $art;
+        }
+
+
+
     public function insert(){
 
     }
