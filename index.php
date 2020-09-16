@@ -46,7 +46,7 @@ function insertUser(){
 }
 
 function connectUser() {
-	if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && $_POST["password"] == $_POST["password2"] && preg_match("#^[a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#" , $_POST['pseudo']) && preg_match("#^[a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#", $_POST['password'])) { 
+	if(!empty($_POST["pseudo"]) && !empty($_POST["password"]) && preg_match("#^[a-zA-Z-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#" , $_POST['pseudo']) && preg_match("#^[a-zA-Z0-9-ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ]*$#", $_POST['password'])) { 
 		$user = new Utilisateur();
 		$user-> setPseudo($_POST['pseudo']);
 		$user-> setPassword($_POST['password']);
@@ -69,7 +69,11 @@ function showRevue() {
 	$revue->setCo_revue($_GET["co_revue"]);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-
+	$article = new Article();
+	$article->setCo_revue($_GET["co_revue"]);
+	$article->selectitre();
+	$datas['article'] = $art;
+	var_dump($datas['article']);
 	return ["template"=>"views/home.php", "datas" => $datas];
 }
 	
@@ -84,6 +88,7 @@ function showMembre() {
 	
 	return ["template" => "views/membre.php", "datas" => $datas];
 }
+
 ?>
 
 <!DOCTYPE html>
