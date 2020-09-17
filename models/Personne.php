@@ -1,6 +1,7 @@
 <?php
-class Personne extends Livre {//creation de la class Utilisateur extention de la class DbConnect
+class Personne extends DbConnect {//creation de la class Utilisateur extention de la class DbConnect
     
+    private $co_revue;
     private $personne_id;
     private $per_nom;
     private $per_titre;
@@ -63,7 +64,7 @@ class Personne extends Livre {//creation de la class Utilisateur extention de la
      public function setPer_bio($per_bio) {
         $this->per_bio = $per_bio;
     }
-    public function getNum_article(): {
+    public function getNum_article() {
         return $this->num_article;
     }
      public function setNum_article($num_article) {
@@ -111,47 +112,62 @@ class Personne extends Livre {//creation de la class Utilisateur extention de la
      public function setSrubrique_id($srubrique_id) {
         $this->srubrique_id = $srubrique_id;
     }
+    public function getCo_revue() {
+        return $this->co_revue;
+    }
+     public function setCo_revue($co_revue) {
+        $this->co_revue = $co_revue;
+    }
+    public function selectByAuteur() {
+        $query = "SELECT per_nom, per_titre FROM  personne WHERE  personne_id = :personne_id AND co_revue = :co_revue ;";
+        $result = $this->pdo->prepare($query);
+        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+        $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
+        $result->execute();
+        $per = $result->fetchAll();
 
+        return $per;
     
+    }
+
+    public function selectByRubrique() {
+        $query = "SELECT DISTINCT per_nom, per_titre FROM  personne WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND article.num_article = personne_has_article.num_article AND personne_has_article.personne_id = personne.personne_id;";
+        $result = $this->pdo->prepare($query);
+        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+        $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
+        $result->execute();
+        $per = $result->fetchAll();
+
+        return $per;
+    }
     
    
-    public function verify_user(){//verifie que le pseudo est egal au pseudo dans la base de données et renvoie le resultat
-        $query2 = "SELECT * FROM utilisateur WHERE pseudo = :pseudo;";
-        $result2 = $this->pdo->prepare($query2);
-        $result2->bindValue(':pseudo',$this->pseudo,PDO::PARAM_STR);
-        $result2->execute();
-        $data2 = $result2->fetch();
-         return $data2;
+    public function selectByRevue(){
+        $query = "SELECT DISTINCT personne.per_nom, personne.per_titre, personne.personne_id FROM personne, personne_has_article, article WHERE  co_revue = :co_revue AND article.num_article = personne_has_article.num_article AND personne_has_article.personne_id = personne.personne_id;";
+            $result = $this->pdo->prepare($query);
+            $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+            $result->execute();
+            $per = $result->fetchAll();
+            
+           
+            return $per;
         }
+   public function insert() {
 
-   public function insert() {//enregistre dans la base de donnée le pseudo le password et cree une id
-    $query="INSERT INTO utilisateur(PSEUDO, PASSWORD) VALUES (:pseudo,:password)";
-    $result=$this->pdo->prepare($query);
-    $result->bindvalue(':pseudo',$this->pseudo,PDO::PARAM_STR);
-    $result->bindvalue(':password',$this->password,PDO::PARAM_STR);
-    $result->execute();
-    $this->id_utilisateur=$this->pdo->lastInsertId();
-    return $this;
         }
-
-    public function selectAll(){//prendre les infos d'utilisateur dans la BDD
-        $query ="SELECT * FROM utilisateur;";
-        $result = $this->pdo->prepare($query);
-        $result->execute();
-        $datas= $result->fetchAll();
-
-        $tab=[];
-
-        foreach($datas as $data) {//cree un tableau d'objet utilisateur et le retourner
-            $current = new Utilisateur();
-            $current->setId($data['id_utilisateur']);
-            array_push($tab, $current);
-            }
-            return $tab;
+    public function selectAll(){
 
     }
     public function select(){
+        $query = "SELECT DISTINCT per_nom, per_titre FROM  personne WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND article.num_article = personne_has_article.num_article;";
+        $result = $this->pdo->prepare($query);
+        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+        $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
+        $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
+        $result->execute();
+        $per = $result->fetchAll();
 
+        return $per;
     }
     public function update(){
 

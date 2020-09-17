@@ -1,5 +1,5 @@
 <?php
-class Article extends DbConnect {
+class Rubrique extends DbConnect {
     
     private $num_article;
     private $art_page;
@@ -70,46 +70,56 @@ class Article extends DbConnect {
         $this->personne_id = $personne_id;
     }
     public function selectByAuteur() {
-        $query = "SELECT art_titre, num_article   FROM article WHERE  personne_id = :personne_id AND co_revue = :co_revue AND personne_has_article.num_article = article.num_article;";
+        $query = "SELECT rub_nom FROM rubrique WHERE personne_id = :personne_id AND co_revue = :co_revue AND personne_has_article.num_article = article.num_article AND article.rubrique_id = rubrique.rubrique_id;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
         $result->execute();
-        $art = $result->fetchAll();
+        $per = $result->fetchAll();
 
-        return $art;
-    }  
-    }
+        return $per;
+    } 
 
     public function selectByRubrique() {
-        $query = "SELECT art_titre, num_article   FROM article WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue;";
+        $query = "SELECT DISTINCT rub_nom FROM rubrique WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
         $result->execute();
-        $art = $result->fetchAll();
+        $per = $result->fetchAll();
 
-        return $art;
+        return $per;
     }
-        
+    
+    public function selectByRevue(){
+        $query = "SELECT DISTINCT  rubrique.rubrique_id, rub_nom FROM article, rubrique WHERE  co_revue = :co_revue AND article.rubrique_id = rubrique.rubrique_id;";
+            $result = $this->pdo->prepare($query);
+            $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+            $result->execute();
+            $rub = $result->fetchAll();
+            
+           
+            return $rub;
+        }
+       
 
 
     public function insert(){
-        
+
     }
     public function selectAll(){
 
     }
     public function select(){
-        $query = "SELECT art_titre, num_article   FROM article WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = arrticle.num_article;";
+        $query = "SELECT DISTINCT rub_nom FROM rubrique WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
         $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
         $result->execute();
-        $art = $result->fetchAll();
+        $per = $result->fetchAll();
 
-        return $art;
+        return $per;
     }
     public function update(){
 
