@@ -23,7 +23,9 @@ switch ($page) {
 	break;
 	case "membre" : $include = showMembre();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
 	break;
-	case "religion": $include = ["template"=>"views/religion.php"];
+	case "the_revue": $include = ["template"=>"views/the_revue.php"];
+	break;
+	case "article" : $include = showArticle();
 	break;
 	default : $include = showHome();//sinon renvoie sur fonction showhome qui elle meme renvoie sur la page home
 }
@@ -69,12 +71,116 @@ function showRevue() {
 	$revue->setCo_revue($_GET["co_revue"]);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
+
+	$auteur = new Personne();
+	$auteur->setCo_revue($_GET["co_revue"]);
+	$per = $auteur->selectByRevue();
+	$datas['auteurs'] = $per;
+
+	$rubrique = new Rubrique();
+	$rubrique->setCo_revue($_GET["co_revue"]);
+	$rub = $rubrique->selectByRevue();
+	$datas['rubriques'] = $rub;
+
+	return ["template" => "views/the_revue.php", "datas" => $datas];
+	
+}
+
+function showArticle() {
+	var_dump($_GET);
+	$datas = [];
+	$revue = new Revue;
+	$revue->setCo_revue($_GET['co_revue']);
+	$revue->selectById();
+	$datas['revue'] = clone $revue;
+	
+	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
+		foreach(showByRubAut() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} elseif(isset($_GET["personne_id"])) {
+		foreach(showByAuteurs() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} elseif(isset($_GET["rubrique_id"])) {
+		foreach(showByRubriques() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} else {
+		$per = new Personne();
+		$per->setCo_revue($_GET['co_revue']);
+		$datas['auteurs'] = $per->selectByRevue();
+
+		$rub = new Rubrique();
+		$rub->setCo_revue($_GET['co_revue']);
+		$datas['rubriques'] = $rub->selectByRevue();
+	}
+
+	return ["template" => "views/the_articles.php", "datas" => $datas];
+}
+
+function showByRubriques() {
+var_dump($_GET['rubrique_id']);
+	$rubriques = new Rubrique();
+	$rubriques->setRubrique_id($_GET["rubrique_id"]);
+	$rubriques = $rubriques->select();
+ 
 	$article = new Article();
+	$article->setRubrique_id($_GET["rubrique_id"]);
 	$article->setCo_revue($_GET["co_revue"]);
-	$article->selectitre();
-	$datas['article'] = $art;
-	var_dump($datas['article']);
-	return ["template"=>"views/home.php", "datas" => $datas];
+	$articles = $article->selectByRubrique();
+var_dump($articles);
+	$liaison = new PersonneHasArticle();
+	// $liaison->setPersonne_id($articles->getPersonne_id());
+	$liaison->setCo_revue($_GET['co_revue']);
+	$pers_articles = $liaison->selectByPersRevue();
+
+	$auteur = new personne();
+	$auteur->setRubrique_id($_GET["rubrique_id"]);
+	$auteur->setCo_revue($_GET["co_revue"]);
+	$auteurs = $auteur->selectByRubrique();
+
+	
+
+	
+
+	return ["rubriques" => [], "auteurs" => [], "articles" => $article->selectByRubrique()];
+}
+
+function showByAuteurs() {
+
+	$per = new Personne();
+	$per->setPersonne_id($_GET["personne_id"]);
+	$auteur = $per->select();
+
+	$liaison = new PersonneHasArticle();
+	$liaison->setPersonne_id($auteur->getPersonne_id());
+	$liaison->setCo_revue($_GET['co_revue']);
+	$pers_articles = $liaison->selectByPersRevue();
+	
+	$article = new Article();
+	$articles = [];
+	foreach($pers_articles as $art) {
+		$article->setNum_article($art['num_article']);
+		array_push($articles, clone $article->select());
+	}
+
+	$rubrique = new Rubrique();
+	$rubriques = [];
+	foreach($articles as $art) {
+		$rubrique->setRubrique_id($art->getRubrique_id());
+		array_push($rubriques, clone $rubrique->select());
+	}
+
+	return ["rubriques" => $rubriques, "auteur" => $auteur, "articles" => $articles];
+}
+
+function showByRubAut() {
+	$article = new Article();
+	$article->setRubrique_id($_GET["rubrique_id"]);
+	$article->setPersonne_id($_GET["personne_id"]);
+	$article->setCo_revue($_GET["co_revue"]);
+	return $article->selectByRubAut();
 }
 	
 function showMembre() {
@@ -82,10 +188,9 @@ function showMembre() {
 	if(!isset($_SESSION["id"])) {
 		header("Location:index.php");
 	}
-	$user = new Revue();
+	$revue = new Revue();
 	$datas = [];
-	$datas["revues"] = $user->selectAll();
-	
+	$datas["revues"] = $revue->selectAll();
 	return ["template" => "views/membre.php", "datas" => $datas];
 }
 
@@ -101,16 +206,24 @@ function showMembre() {
         <body>
             
 		<header id="entete">
-            <img src="image/planete-logo.png"  alt="logo"><img src="image/planete-background-blancvert.jpg" id="flag" alt="logo">
+            <img src="image/planete-logo.png" alt="logo"><img src="image/planete-background-blancvert.jpg" id="flag" alt="logo">
         </header>
 		<div id="encadre">
-        <div id="menu"><ul><li>Accueil</li><li>la revue planete</li><li>le nouveau planete</li><li>le dictionnaire des a</li></ul></div>
-		<?php require $include["template"]; ?>
-        </div>
-			  
-			
-			<script type="text/javascript" src="slid.js"></script>
-			
-	    </body>
+			<div id="menu">
+				<ul>
+					<li><a href="index.php?page=home">Accueil</a></li>
+					<li><a href="index.php?page=membre">La revue planete</a></li>
+					<li><a href="index.php?page=">Le nouveau planete</a></li>
+					<li><a href="index.php?page=">Le dictionnaire des a</a></li>
+				</ul>
+			</div>
+			<?php require $include["template"]; ?>
+		</div>
+		
+		<? if(isset($_SESSION["id"]) && isset($_SESSION["pseudo"])): ?>
+			<footer id="admin"><a href="">Espace Admin</a></footer>
+		<? endif ?>
+		<script type="text/javascript" src="slid.js"></script>
+	</body>
 </html>
 
