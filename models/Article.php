@@ -43,7 +43,7 @@ class Article extends DbConnect {
     public function getCo_revue() {
         return $this->co_revue;
     }
-     public function setCo_revue( $co_revue) {
+     public function setCo_revue(string $co_revue) {
         $this->co_revue = $co_revue;
     }
     public function getRubrique_id():?int {
@@ -91,7 +91,7 @@ class Article extends DbConnect {
     }
 
     public function selectByRubAut(){
-        $query = "SELECT art_titre, num_article   FROM article WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
+        $query = "SELECT art_titre, num_article FROM article WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
