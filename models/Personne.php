@@ -159,16 +159,17 @@ class Personne extends DbConnect {//creation de la class Utilisateur extention d
 
     }
     public function select(){
-        $query = "SELECT DISTINCT per_nom, per_titre FROM  personne WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND article.num_article = personne_has_article.num_article;";
+        // $query = "SELECT DISTINCT personne_id, per_nom, per_titre FROM  personne WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND article.num_article = personne_has_article.num_article;";
+        $query = "SELECT DISTINCT personne_id, per_nom, per_titre FROM  personne WHERE personne_id = :id";
         $result = $this->pdo->prepare($query);
-        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
-        $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
-        $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
+        $result->bindValue(":id",$this->personne_id,PDO::PARAM_INT);
         $result->execute();
-        $per = $result->fetchAll();
-
-        return $per;
+        $per = $result->fetch();
+        $this->per_nom = $per['per_nom'];
+        $this->per_titre = $per['per_titre'];
+        return $this;
     }
+    
     public function update(){
 
     }

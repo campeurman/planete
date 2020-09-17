@@ -71,83 +71,103 @@ function showRevue() {
 	$revue->setCo_revue($_GET["co_revue"]);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
+
 	$auteur = new Personne();
 	$auteur->setCo_revue($_GET["co_revue"]);
 	$per = $auteur->selectByRevue();
-	$datas['auteur'] = $per;
+	$datas['auteurs'] = $per;
+
 	$rubrique = new Rubrique();
 	$rubrique->setCo_revue($_GET["co_revue"]);
 	$rub = $rubrique->selectByRevue();
-	$datas['rubrique'] = $rub;
+	$datas['rubriques'] = $rub;
 
 	return ["template" => "views/the_revue.php", "datas" => $datas];
 	
 }
 
 function showArticle() {
-	var_dump($_GET);
+	
 	$datas = [];
-	$datas['id'] = $_GET;
 	$revue = new Revue;
 	$revue->setCo_revue($_GET['co_revue']);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-	if (null !==($_GET['personne_id'] & $_GET["rubrique_id"])) {
-		$article = new Article;
-		$article->setPersonne_id($_GET["personne_id"]);
-		$article->setRubrique_id($_GET["rubrique_id"]);
-		$article->setCo_revue($_GET["co_revue"]);
-		$article->select();
-		$datas['article'] = $article;
-		$rubrique = new Rubrique;
-		$rubrique->setPersonne_id($_GET["personne_id"]);
-		$rubrique->setRubrique_id($_GET["rubrique_id"]);
-		$rubrique->setCo_revue($_GET["co_revue"]);
-		$rubrique->select();
-		$datas['rubrique'] = $rubrique;
-		$auteur = new Personne;
-		$auteur->setPersonne_id($_GET["personne_id"]);
-		$auteur->setRubrique_id($_GET["rubrique_id"]);
-		$auteur->setCo_revue($_GET["co_revue"]);
-		$auteur->select();
-		$datas['auteur'] = $auteur;
-		
-	}else if (empty($_GET['personne_id'])) {
-		$article = new Article;
-		$article->setRubrique_id($_GET["rubrique_id"]);
-		$article->setCo_revue($_GET["co_revue"]);
-		$article->selectByRubrique();
-		$datas['article'] = $article;
-		$rubrique = new Rubrique;
-		$rubrique->setRubrique_id($_GET["rubrique_id"]);
-		$rubrique->setCo_revue($_GET["co_revue"]);
-		$rubrique->selectByRubrique();
-		$datas['rubrique'] = $rubrique;
-		$auteur = new Personne;
-		$auteur->setRubrique_id($_GET["rubrique_id"]);
-		$auteur->setCo_revue($_GET["co_revue"]);
-		$auteur->selectByRubrique();
-		$datas['auteur'] = $auteur;
-		
-	}else {
-		$article = new Article;
-		$article->setPersonne_id($_GET["personne_id"]);
-		$article->setCo_revue($_GET["co_revue"]);
-		$article->selectByAuteur();
-		$datas['article'] = $article;
-		$rubrique = new Rubrique;
-		$rubrique->setPersonne_id($_GET["personne_id"]);
-		$rubrique->setCo_revue($_GET["co_revue"]);
-		$rubrique->selectByAuteur();
-		$datas['rubrique'] = $rubrique;
-		$auteur = new Personne;
-		$auteur->setPersonne_id($_GET["personne_id"]);
-		$auteur->setCo_revue($_GET["co_revue"]);
-		$auteur->selectByAuteur();
-		$datas['auteur'] = $auteur;
-		
+	
+	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
+		foreach(showByRubAut() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} elseif(isset($_GET["personne_id"])) {
+		foreach(showByAuteurs() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} elseif(isset($_GET["rubrique_id"])) {
+		foreach(showByRubriques() as $key => $entry) {
+			$datas[$key] = $entry;
+		}
+	} else {
+		$per = new Personne();
+		$per->setCo_revue($_GET['co_revue']);
+		$datas['auteurs'] = $per->selectByRevue();
+
+		$rub = new Rubrique();
+		$rub->setCo_revue($_GET['co_revue']);
+		$datas['rubriques'] = $rub->selectByRevue();
 	}
-	return ["template" => "views/the_revue.php", "datas" => $datas];
+
+	return ["template" => "views/the_articles.php", "datas" => $datas];
+}
+
+function showByRubriques() {
+
+	// $auteur = new Personne();
+	// $auteur->setCo_revue($_GET["co_revue"]);
+
+	$rubrique = new Rubrique();
+	$rubrique->setCo_revue($_GET["co_revue"]);
+
+	$article = new Article();
+	$article->setRubrique_id($_GET["rubrique_id"]);
+	$article->setCo_revue($_GET["co_revue"]);
+
+	return ["rubriques" => [], "auteurs" => [], "articles" => $article->selectByRubrique()];
+}
+
+function showByAuteurs() {
+
+	$per = new Personne();
+	$per->setPersonne_id($_GET["personne_id"]);
+	$auteur = $per->select();
+
+	$liaison = new PersonneHasArticle();
+	$liaison->setPersonneId($auteur->getPersonne_id());
+	$liaison->setCoRevue($_GET['co_revue']);
+	$pers_articles = $liaison->selectByPersRevue();
+	
+	$article = new Article();
+	$articles = [];
+	foreach($pers_articles as $art) {
+		$article->setNum_article($art['num_article']);
+		array_push($articles, clone $article->select());
+	}
+
+	$rubrique = new Rubrique();
+	$rubriques = [];
+	foreach($articles as $art) {
+		$rubrique->setRubrique_id($art->getRubrique_id());
+		array_push($rubriques, clone $rubrique->select());
+	}
+
+	return ["rubriques" => $rubriques, "auteur" => $auteur, "articles" => $articles];
+}
+
+function showByRubAut() {
+	$article = new Article();
+	$article->setRubrique_id($_GET["rubrique_id"]);
+	$article->setPersonne_id($_GET["personne_id"]);
+	$article->setCo_revue($_GET["co_revue"]);
+	return $article->selectByRubAut();
 }
 	
 function showMembre() {

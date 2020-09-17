@@ -1,19 +1,28 @@
 <?php
 class Rubrique extends DbConnect {
     
-    private $num_article;
-    private $art_page;
-    private $art_titre;
+    // private $num_article;
+    // private $art_page;
+    // private $art_titre;
     //private $art_sstitre; ?
-    private $art_texte;
-    private $co_revue;
+    // private $art_texte;
+    // private $co_revue;
     //private $rev_numero;
     //private $art_infos;
 
+    private $rub_nom;
     private $rubrique_id;
     private $srubrique_id;
     private $ssrubrique_id;
     private $personne_id;
+
+    function getRub_nom(): string {
+        return $this->rub_nom;
+    }
+
+    function setRub_nom(string $nom) {
+        $this->rub_nom = $nom;
+    }
 
     public function getNum_article() {
         return $this->num_article;
@@ -48,7 +57,7 @@ class Rubrique extends DbConnect {
     public function getRubrique_id():int {
         return $this->rubrique_id;
     }
-    public function setRubrique_id(int $rubrique_id) {
+    public function setRubrique_id(?int $rubrique_id) {
         $this->rubrique_id = $rubrique_id;
     }
     public function getSrubrique_id():int {
@@ -110,16 +119,14 @@ class Rubrique extends DbConnect {
     public function selectAll(){
 
     }
-    public function select(){
-        $query = "SELECT DISTINCT rub_nom FROM rubrique WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
+    public function select() : self {
+        $query = "SELECT DISTINCT rub_nom FROM rubrique WHERE rubrique_id = :rubrique_id";
         $result = $this->pdo->prepare($query);
-        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
-        $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
-        $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
+        $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
         $result->execute();
-        $per = $result->fetchAll();
-
-        return $per;
+        $rub = $result->fetch();
+        $this->rub_nom = $rub['rub_nom'];
+        return $this;
     }
     public function update(){
 

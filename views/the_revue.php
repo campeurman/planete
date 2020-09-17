@@ -5,12 +5,12 @@ var_dump($include['datas']);
     <div id="categories">
         <h2>Catégories</h2>
         <ul>
-        <?php 
-$max = sizeof($include['datas']['rubrique']);
-for($i=0; $i<$max; $i++): ?>
-    <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&rubrique_id=<?= $include['datas']['rubrique'][$i]['rubrique_id'] ?>'><?= $include['datas']['rubrique'][$i]['rub_nom'] ?> </a></li>
-<?php endfor ?>
-</ul>
+            <?php 
+            $max = sizeof($include['datas']['rubriques']);
+            for($i=0; $i<$max; $i++): ?>
+                <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&rubrique_id=<?= $include['datas']['rubrique'][$i]['rubrique_id'] ?>'><?= $include['datas']['rubrique'][$i]['rub_nom'] ?> </a></li>
+            <?php endfor ?>
+        </ul>
     </div>
     <div id="infos">
         <h2>PLANETE N°<?= $include["datas"]["revue"]->getRev_numero() ?></h2>
@@ -22,9 +22,9 @@ for($i=0; $i<$max; $i++): ?>
         <h2>Auteurs</h2>
         <ul>
         
-<?php $max = sizeof($include['datas']['auteur']); ?>
+<?php $max = sizeof($include['datas']['auteurs']); ?>
 <?php for($i=0; $i<$max; $i++): ?>
-    <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&personne_id=<?= $include['datas']['auteur'][$i]['personne_id'] ?>'><?= $include['datas']['auteur'][$i]['per_nom'] ?></a></li>
+    <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&personne_id=<?= $include['datas']['auteurs'][$i]['personne_id'] ?>'><?= $include['datas']['auteurs'][$i]['per_nom'] ?></a></li>
 <?php endfor ?>
 </ul>
     </div>
