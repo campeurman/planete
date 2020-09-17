@@ -8,7 +8,7 @@ var_dump($include['datas']);
             <?php 
             $max = sizeof($include['datas']['rubriques']);
             for($i=0; $i<$max; $i++): ?>
-                <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&rubrique_id=<?= $include['datas']['rubrique'][$i]['rubrique_id'] ?>'><?= $include['datas']['rubrique'][$i]['rub_nom'] ?> </a></li>
+                <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&rubrique_id=<?= $include['datas']['rubriques'][$i]['rubrique_id'] ?>'><?= $include['datas']['rubriques'][$i]['rub_nom'] ?> </a></li>
             <?php endfor ?>
         </ul>
     </div>
