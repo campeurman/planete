@@ -23,7 +23,9 @@ switch ($page) {
 	break;
 	case "membre" : $include = showMembre();//renvoie sur fonction showhome qui elle meme renvoie sur la page home
 	break;
-	case "religion": $include = ["template"=>"views/religion.php"];
+	case "the_revue": $include = ["template"=>"views/the_revue.php"];
+	break;
+	case "article" : $include = showArticle();
 	break;
 	default : $include = showHome();//sinon renvoie sur fonction showhome qui elle meme renvoie sur la page home
 }
@@ -69,12 +71,83 @@ function showRevue() {
 	$revue->setCo_revue($_GET["co_revue"]);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-	$article = new Article();
-	$article->setCo_revue($_GET["co_revue"]);
-	$art = $article->selectitre();
-	$datas['article'] = $art;
-	var_dump($datas['article']);
-	return ["template"=>"views/home.php", "datas" => $datas];
+	$auteur = new Personne();
+	$auteur->setCo_revue($_GET["co_revue"]);
+	$per = $auteur->selectByRevue();
+	$datas['auteur'] = $per;
+	$rubrique = new Rubrique();
+	$rubrique->setCo_revue($_GET["co_revue"]);
+	$rub = $rubrique->selectByRevue();
+	$datas['rubrique'] = $rub;
+
+	return ["template" => "views/the_revue.php", "datas" => $datas];
+	
+}
+
+function showArticle() {
+	var_dump($_GET);
+	$datas = [];
+	$datas['id'] = $_GET;
+	$revue = new Revue;
+	$revue->setCo_revue($_GET['co_revue']);
+	$revue->selectById();
+	$datas['revue'] = clone $revue;
+	if (null !==($_GET['personne_id'] & $_GET["rubrique_id"])) {
+		$article = new Article;
+		$article->setPersonne_id($_GET["personne_id"]);
+		$article->setRubrique_id($_GET["rubrique_id"]);
+		$article->setCo_revue($_GET["co_revue"]);
+		$article->select();
+		$datas['article'] = $article;
+		$rubrique = new Rubrique;
+		$rubrique->setPersonne_id($_GET["personne_id"]);
+		$rubrique->setRubrique_id($_GET["rubrique_id"]);
+		$rubrique->setCo_revue($_GET["co_revue"]);
+		$rubrique->select();
+		$datas['rubrique'] = $rubrique;
+		$auteur = new Personne;
+		$auteur->setPersonne_id($_GET["personne_id"]);
+		$auteur->setRubrique_id($_GET["rubrique_id"]);
+		$auteur->setCo_revue($_GET["co_revue"]);
+		$auteur->select();
+		$datas['auteur'] = $auteur;
+		
+	}else if (empty($_GET['personne_id'])) {
+		$article = new Article;
+		$article->setRubrique_id($_GET["rubrique_id"]);
+		$article->setCo_revue($_GET["co_revue"]);
+		$article->selectByRubrique();
+		$datas['article'] = $article;
+		$rubrique = new Rubrique;
+		$rubrique->setRubrique_id($_GET["rubrique_id"]);
+		$rubrique->setCo_revue($_GET["co_revue"]);
+		$rubrique->selectByRubrique();
+		$datas['rubrique'] = $rubrique;
+		$auteur = new Personne;
+		$auteur->setRubrique_id($_GET["rubrique_id"]);
+		$auteur->setCo_revue($_GET["co_revue"]);
+		$auteur->selectByRubrique();
+		$datas['auteur'] = $auteur;
+		
+	}else {
+		$article = new Article;
+		$article->setPersonne_id($_GET["personne_id"]);
+		$article->setCo_revue($_GET["co_revue"]);
+		$article->selectByAuteur();
+		$datas['article'] = $article;
+		$rubrique = new Rubrique;
+		$rubrique->setPersonne_id($_GET["personne_id"]);
+		$rubrique->setCo_revue($_GET["co_revue"]);
+		$rubrique->selectByAuteur();
+		$datas['rubrique'] = $rubrique;
+		$auteur = new Personne;
+		$auteur->setPersonne_id($_GET["personne_id"]);
+		$auteur->setCo_revue($_GET["co_revue"]);
+		$auteur->selectByAuteur();
+		$datas['auteur'] = $auteur;
+		
+	}
+	return ["template" => "views/the_revue.php", "datas" => $datas];
 }
 	
 function showMembre() {
