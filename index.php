@@ -125,21 +125,36 @@ function showByRubriques() {
 	// $auteur->setCo_revue($_GET["co_revue"]);
 
 	$rubrique = new Rubrique();
-	$rubrique->setCo_revue($_GET["co_revue"]);
+	$rubrique->setRubrique_id($_GET["rubrique_id"]);
+	$rubrique->select();
+	var_dump($rubrique);
 
 	$article = new Article();
-	$article->setRubrique_id($_GET["rubrique_id"]);
+	$article->setRubrique_id($rubrique->getRubrique_id());
 	$article->setCo_revue($_GET["co_revue"]);
-	array_push($articles, clone $article->selectByRubrique());
+	$articles = $article->selectByRubrique();
+	var_dump($articles);
 
 	$liaison = new PersonneHasArticle();
-	$liaison->setCo_revue($_GET['co_revue']);
-	$pers_articles = $liaison->selectByPersRevue();
+	$pers_articles = [];
+	foreach($articles as $art) {
+		$liaison->setNum_article($art['num_article']);
+		$results = $liaison->selectByArticle();
+		foreach($results as $res) {
+			array_push($pers_articles, $res);
+		}
+	}
 
 	$auteur = new personne();
-	$auteur->setRubrique_id($_GET["rubrique_id"]);
-	$auteur->setCo_revue($_GET["co_revue"]);
-	$auteurs = $auteur->selectByRubrique();
+	$auteurs = [];
+	foreach($pers_articles as $per) {
+		$auteur->setPersonne_id($per['personne_id']);
+		array_push($auteurs, clone $auteur->select());
+	}
+	var_dump($auteurs);
+	// $auteur->setRubrique_id($_GET["rubrique_id"]);
+	// $auteur->setCo_revue($_GET["co_revue"]);
+	// $auteurs = $auteur->selectByRubrique();
 
 	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $articles];
 }

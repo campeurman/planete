@@ -4,11 +4,8 @@ class Article extends DbConnect {
     private $num_article;
     private $art_page;
     private $art_titre;
-    //private $art_sstitre; ?
     private $art_texte;
     private $co_revue;
-    //private $rev_numero;
-    //private $art_infos;
 
     private $rubrique_id;
     private $srubrique_id;
@@ -64,57 +61,35 @@ class Article extends DbConnect {
      public function setSsrubrique_id(int $ssrubrique_id) {
         $this->ssrubrique_id = $ssrubrique_id;
     }
-    // public function getPersonne_id():int {
-    //     return $this->personne_id;
-    // }
-    //  public function setPersonne_id(int $personne_id) {
-    //     $this->personne_id = $personne_id;
-    // }
-    
-    // public function selectByAuteur() {
-    //     $query = "SELECT art_titre, num_article FROM article WHERE personne_id = :personne_id AND co_revue = :co_revue AND personne_has_article.num_article = article.num_article;";
-    //     $result = $this->pdo->prepare($query);
-    //     $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
-    //     $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_INT);
-    //     $result->execute();
-    //     $art = $result->fetchAll();
-
-    //     return $art;
-    // }  
-    
 
     public function selectByRubrique(): array {
         $query = "SELECT art_titre, num_article FROM article WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
-        var_dump($result->execute());
-        $art = $result->fetchAll();
-        var_dump($this);
-        var_dump($art);
-        return $art;
+        $result->execute();
+        $arts = $result->fetchAll();
+        return $arts;
     }
 
-    public function selectByRubAut(){
+    public function selectByRubAut(): array{
         $query = "SELECT art_titre, num_article   FROM article WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
         $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
         $result->execute();
-        $art = $result->fetchAll();
-
-        return $art;
+        $arts = $result->fetchAll();
+        return $arts;
     }
         
-
-
     public function insert(){
         
     }
     public function selectAll(){
 
     }
+
     public function select() : self {
         $query = "SELECT art_titre, num_article, rubrique_id FROM article WHERE num_article = :num_article;";
         $result = $this->pdo->prepare($query);
@@ -125,6 +100,7 @@ class Article extends DbConnect {
         $this->rubrique_id = $art['rubrique_id'];
         return $this;
     }
+
     public function update(){
 
     }

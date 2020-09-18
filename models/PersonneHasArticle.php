@@ -42,9 +42,9 @@ class PersonneHasArticle extends DbConnect {
     }
 
     function selectByArticle(): array {
-        $query = "SELECT personne_id, num_article FROM personne_has_article WHERE num_article = :id";
+        $query = "SELECT DISTINCT personne_id, num_article FROM personne_has_article WHERE num_article = :id";
         $result = $this->pdo->prepare($query);
-        $result->bindValue('id', $this->num_article, PDO::PARAM_INT);
+        $result->bindValue('id', $this->num_article, PDO::PARAM_STR);
         $result->execute();
         return $result->fetchAll();
     }

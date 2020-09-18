@@ -28,21 +28,23 @@ $article = $include['datas']['article'] ?? null;
         <figure class="illustration">
             <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
         </figure>
-    </div>
-    <div id="articles">
-    <h2>articles</h2>
-        <ul>
-    <?php $max = sizeof($include['datas']['articles']); ?>
 
-    <?php if($max == 1): ?>
-        <li><?= $articles[1]->getArt_titre() ?></li>
-        <?php else: ?>
-            <?php for($i=0; $i<$max; $i++): ?>
-                <li><?= $articles[$i]->getArt_titre() ?></li>
-            <?php endfor ?>
-            <?php endif ?>
-        </ul>
+        <div id="articles">
+        <h2>Articles</h2>
+            <ul>
+            <?php if(isset($article)): ?>
+                <?php var_dump($max) ?>
+                <li><?= $articles[1]->getArt_titre() ?></li>
+                <?php else: ?>
+                    <?php $max = sizeof($include['datas']['articles']); ?>
+                    <?php for($i=0; $i<$max; $i++): ?>
+                        <li><?= $articles[$i]->getArt_titre() ?></li>
+                    <?php endfor ?>
+                <?php endif ?>
+            </ul>
+        </div>
     </div>
+    
     <div id="auteurs">
         <h2>Auteurs</h2>
         <ul>
