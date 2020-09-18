@@ -152,11 +152,7 @@ class Revue extends DbConnect {
             $result = $this->pdo->prepare($query);
             $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
             $result->execute();
-<<<<<<< HEAD
             $datas = $result->fetchAll();
-=======
-            $datas = $result->fetchall();
->>>>>>> e0ddc16b1a4380cc063e31193459c822eb9126c2
             
             $this->setRev_numero($datas['0']['rev_numero']);
             $this->setRev_moiscouverts($datas['0']['rev_moiscouverts']);
