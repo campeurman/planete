@@ -94,7 +94,7 @@ function showArticle() {
 	$revue->setCo_revue($_GET['co_revue']);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-	
+	var_dump($datas);
 	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
 		foreach(showByRubAut() as $key => $entry) {
 			$datas[$key] = $entry;
@@ -115,8 +115,9 @@ function showArticle() {
 		$rub = new Rubrique();
 		$rub->setCo_revue($_GET['co_revue']);
 		$datas['rubriques'] = $rub->selectByRevue();
+		
 	}
-
+	var_dump($datas);
 	return ["template" => "views/the_articles.php", "datas" => $datas];
 }
 
@@ -129,7 +130,7 @@ function showByRubriques() {
 	$article = new Article();
 	$article->setRubrique_id($_GET["rubrique_id"]);
 	$article->setCo_revue($_GET["co_revue"]);
-	$articles = $article->selectByRubrique();
+	array_push($articles, clone $article->selectByRubrique());
 
 	$liaison = new PersonneHasArticle();
 	$liaison->setCo_revue($_GET['co_revue']);
@@ -144,7 +145,7 @@ function showByRubriques() {
 
 	
 
-	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $article->selectByRubrique()];
+	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $articles];
 }
 
 function showByAuteurs() {

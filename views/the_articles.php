@@ -1,5 +1,6 @@
 <?php
 
+var_dump($include['datas']);
 $revue = $include['datas']['revue'];
 $rubriques = $include['datas']['rubriques'] ?? null;
 $auteurs = $include['datas']['auteurs'] ?? null;
@@ -7,6 +8,7 @@ $rubrique = $include['datas']['rubrique'] ?? null;
 $auteur = $include['datas']['auteur'] ?? null;
 $articles = $include['datas']['articles'] ?? null;
 $article = $include['datas']['article'] ?? null;
+
 ?>
 <section id="revue">
     <div id="categories">
@@ -29,13 +31,20 @@ $article = $include['datas']['article'] ?? null;
             <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
         </figure>
     </div>
-    <!-- <div id="articles">
+    <div id="articles">
     <h2>articles</h2>
+        <ul>
     <?php $max = sizeof($include['datas']['articles']); ?>
+
+    <?php if($max == 1): ?>
+        <li><?= $articles[1]->getArt_titre() ?></li>
+        <?php else: ?>
             <?php for($i=0; $i<$max; $i++): ?>
-                <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["article"][$i]["art_texte"] ?>&personne_id=<?= $include['datas']['auteurs'][$i]['personne_id'] ?>'><?= $include["datas"]["article"][$i]["art_titre"] ?></a></li>
+                <li><?= $articles[$i]->getArt_titre() ?></li>
             <?php endfor ?>
-    </div> -->
+            <?php endif ?>
+        </ul>
+    </div>
     <div id="auteurs">
         <h2>Auteurs</h2>
         <ul>

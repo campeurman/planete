@@ -85,8 +85,11 @@ class Article extends DbConnect {
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
         $result->execute();
         $art = $result->fetchAll();
-
-        return $art;
+        var_dump($art);
+        $this->num_article = $art['num_article'];
+        $this->art_titre = $art['art_titre'];
+        var_dump($this);
+        return $this;
     }
 
     public function selectByRubAut(){
