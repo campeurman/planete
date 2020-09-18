@@ -81,12 +81,11 @@ class Article extends DbConnect {
     public function selectByRubrique() {
         $query = "SELECT art_titre, num_article FROM article WHERE rubrique_id = :rubrique_id AND co_revue = :co_revue;";
         $result = $this->pdo->prepare($query);
-    var_dump($this);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
-    var_dump($result);
+        $result->execute();
         $art = $result->fetchAll();
-    var_dump($art);
+
         return $art;
     }
 
@@ -97,7 +96,7 @@ class Article extends DbConnect {
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
         $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_INT);
         $result->execute();
-        $art = $result->fetchAll();
+        $art = $result->fetch();
 
         return $art;
     }

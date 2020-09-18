@@ -33,7 +33,7 @@ class Revue extends DbConnect {
      public function setRev_numero($rev_numero) {
         $this->rev_numero = $rev_numero;
     }
-    public function getRRev_moiscouverts() {
+    public function getRev_moiscouverts() {
         return $this->rev_moiscouverts;
     }
      public function setRev_moiscouverts($rev_moiscouverts) {
@@ -152,7 +152,7 @@ class Revue extends DbConnect {
             $result = $this->pdo->prepare($query);
             $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
             $result->execute();
-            $datas = $result->fetchall();
+            $datas = $result->fetchAll();
             
             $this->setRev_numero($datas['0']['rev_numero']);
             $this->setRev_moiscouverts($datas['0']['rev_moiscouverts']);

@@ -106,6 +106,7 @@ a:hover {
     border: 1px solid green;
 }
 
+
 #auteurs {
     width: 20%;
     border: 1px solid blue;
@@ -117,4 +118,5 @@ a:hover {
 
 .illustration img {
     width: 100%;
+    float : left;
 }

@@ -125,9 +125,7 @@ class Rubrique extends DbConnect {
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
         $result->execute();
         $rub = $result->fetch();
-        var_dump($rub);
         $this->rub_nom = $rub['rub_nom'];
-        var_dump($this);
         return $this;
     }
     public function update(){

@@ -12,9 +12,11 @@
     </div>
     <div id="infos">
         <h2>PLANETE N°<?= $include["datas"]["revue"]->getRev_numero() ?></h2>
+        <p>date de parution : <?= $include["datas"]["revue"]->getRev_moiscouverts() ?><?= $include["datas"]["revue"]->getRev_dateparution() ?></p>
         <figure class="illustration">
             <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
         </figure>
+        
     </div>
     <div id="auteurs">
         <h2>Auteurs</h2>
