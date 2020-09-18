@@ -1,5 +1,4 @@
 <?php
-
 var_dump($include['datas']);
 $revue = $include['datas']['revue'];
 $rubriques = $include['datas']['rubriques'] ?? null;
@@ -8,7 +7,6 @@ $rubrique = $include['datas']['rubrique'] ?? null;
 $auteur = $include['datas']['auteur'] ?? null;
 $articles = $include['datas']['articles'] ?? null;
 $article = $include['datas']['article'] ?? null;
-
 ?>
 <section id="revue">
     <div id="categories">

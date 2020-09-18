@@ -57,7 +57,7 @@ class Rubrique extends DbConnect {
     public function getRubrique_id():int {
         return $this->rubrique_id;
     }
-    public function setRubrique_id(string $rubrique_id) {
+    public function setRubrique_id(?int $rubrique_id) {
         $this->rubrique_id = $rubrique_id;
     }
     public function getSrubrique_id():int {

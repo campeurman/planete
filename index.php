@@ -71,7 +71,6 @@ function showRevue() {
 	$revue->setCo_revue($_GET["co_revue"]);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-	
 
 	$auteur = new Personne();
 	$auteur->setCo_revue($_GET["co_revue"]);
@@ -88,13 +87,13 @@ function showRevue() {
 }
 
 function showArticle() {
-
+	
 	$datas = [];
 	$revue = new Revue;
 	$revue->setCo_revue($_GET['co_revue']);
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
-	var_dump($datas);
+	
 	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
 		foreach(showByRubAut() as $key => $entry) {
 			$datas[$key] = $entry;
@@ -115,17 +114,18 @@ function showArticle() {
 		$rub = new Rubrique();
 		$rub->setCo_revue($_GET['co_revue']);
 		$datas['rubriques'] = $rub->selectByRevue();
-		
 	}
-	var_dump($datas);
+
 	return ["template" => "views/the_articles.php", "datas" => $datas];
 }
 
 function showByRubriques() {
 
-	$rubriques = new Rubrique();
-	$rubriques->setRubrique_id($_GET["rubrique_id"]);
-	$rubrique = $rubriques->select();
+	// $auteur = new Personne();
+	// $auteur->setCo_revue($_GET["co_revue"]);
+
+	$rubrique = new Rubrique();
+	$rubrique->setCo_revue($_GET["co_revue"]);
 
 	$article = new Article();
 	$article->setRubrique_id($_GET["rubrique_id"]);
@@ -140,10 +140,6 @@ function showByRubriques() {
 	$auteur->setRubrique_id($_GET["rubrique_id"]);
 	$auteur->setCo_revue($_GET["co_revue"]);
 	$auteurs = $auteur->selectByRubrique();
-
-	
-
-	
 
 	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $articles];
 }

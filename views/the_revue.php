@@ -1,4 +1,3 @@
-
 <section id="revue">
     <div id="categories">
         <h2>Catégories</h2>
