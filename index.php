@@ -98,23 +98,31 @@ function showArticle() {
 	$datas['revue'] = clone $revue;
 	
 	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
-		var_dump("dernier cas");
+		$template = "articlesbycat_per";
 		foreach(showByRubAut() as $key => $entry) {
 			$datas[$key] = $entry;
 		}
 	} elseif(isset($_GET["personne_id"])) {
+		$template = "articlesbyper";
 		foreach(showByAuteurs() as $key => $entry) {
 			$datas[$key] = $entry;
 		}
 	} elseif(isset($_GET["rubrique_id"])) {
+		$template = "articlesbycat";
 		foreach(showByRubriques() as $key => $entry) {
 			$datas[$key] = $entry;
 		}
 	} else {
-		
+		header("Location:index.php?page=revue&co_revue={$revue->getCo_revue()}");
 	}
 
-	return ["template" => "views/the_articles.php", "datas" => $datas];
+	if(isset($_GET["num_article"])) {
+		$article = new Article();
+		$article->setNum_article($_GET["num_article"]);
+		$datas['article'] = $article->select();
+	}
+
+	return ["template" => "views/$template.php", "datas" => $datas];
 }
 
 function showByRubriques() {
@@ -177,11 +185,20 @@ function showByAuteurs() {
 }
 
 function showByRubAut() {
+
+	$rubrique = new Rubrique();
+	$rubrique->setRubrique_id($_GET["rubrique_id"]);
+
+	$auteur = new Personne();
+	$auteur->setPersonne_id($_GET["personne_id"]);
+	
 	$article = new Article();
 	$article->setRubrique_id($_GET["rubrique_id"]);
-	$article->setPersonne_id($_GET["personne_id"]);
 	$article->setCo_revue($_GET["co_revue"]);
-	return $article->selectByRubAut();
+	$articles = $article->selectByRubAut($_GET["personne_id"]);
+
+
+	return ["rubrique" => $rubrique->select(), "auteur" => $auteur->select(), "articles" => $articles];
 }
 	
 function showMembre() {

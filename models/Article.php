@@ -79,12 +79,12 @@ class Article extends DbConnect {
         return $arts;
     }
 
-    public function selectByRubAut(): array{
-        $query = "SELECT art_titre, num_article   FROM article WHERE  rubrique_id = :rubrique_id AND co_revue = :co_revue AND personne_id = :personne_id AND personne_has_article.num_article = article.num_article;";
+    public function selectByRubAut($id): array{
+        $query = "SELECT art.art_titre, art.num_article FROM article art, personne_has_article pha WHERE art.rubrique_id = :rubrique_id AND art.co_revue = :co_revue AND pha.num_article = art.num_article AND pha.personne_id = :personne_id;";
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_STR);
-        $result->bindValue(":personne_id",$this->personne_id,PDO::PARAM_STR);
+        $result->bindValue(":personne_id",$id,PDO::PARAM_STR);
         $result->execute();
         $arts = $result->fetchAll();
         return $arts;

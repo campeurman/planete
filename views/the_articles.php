@@ -1,4 +1,5 @@
 <?php
+var_dump($include['datas']);
 $revue = $include['datas']['revue'];
 $rubriques = $include['datas']['rubriques'] ?? null;
 $auteurs = $include['datas']['auteurs'] ?? null;
@@ -37,7 +38,7 @@ $article = $include['datas']['article'] ?? null;
             <?php else: ?>
                 <?php $max = sizeof($articles); ?>
                 <?php for($i=0; $i<$max; $i++): ?>
-                    <!-- <li><?= $articles[$i]['art_titre'] ?></li> -->
+                    <li><?= $articles[$i]->getArt_titre() ?></li>
                 <?php endfor ?>
             <?php endif ?>
             </ul>
