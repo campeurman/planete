@@ -1,5 +1,4 @@
 <?php
-var_dump($include['datas']);
 $revue = $include['datas']['revue'];
 $rubriques = $include['datas']['rubriques'] ?? null;
 $auteurs = $include['datas']['auteurs'] ?? null;
@@ -23,15 +22,15 @@ $articles = $include['datas']['articles'] ?? null;
         <figure class="illustration">
             <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
         </figure>
-        <div id="articles">
-        <h2>Articles</h2>
+        <!-- <div id="articles">
+            <h2>Articles</h2>
             <ul>
                 <?php $max = sizeof($articles); ?>
                 <?php for($i=0; $i<$max; $i++): ?>
                     <li><?= $articles[$i]['art_titre'] ?></li>
                 <?php endfor ?>
             </ul>
-        </div>
+        </div> -->
     </div>
     <div id="auteurs">
         <h2>Auteurs</h2>

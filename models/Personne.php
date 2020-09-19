@@ -13,6 +13,10 @@ class Personne extends DbConnect {
     private $per_sexe;
     private $per_bio;
 
+    /**
+     * Propriété non présente dans la table, pour faciliter les opérations
+     * @var string
+     */
     private $co_revue;
 
     
@@ -77,7 +81,7 @@ class Personne extends DbConnect {
     }
 
     public function setCo_revue($code) {
-        $this->per_bio = $code;
+        $this->co_revue = $code;
     }
 
     public function insert() {} 
@@ -97,6 +101,19 @@ class Personne extends DbConnect {
         $this->per_nom = $per['per_nom'];
         $this->per_titre = $per['per_titre'];
         return $this;
+    }
+
+    /**
+     * Sélectionne les utilisateurs en fonction de la revue dans laquelle ils ont publié, pour faciliter les opérations
+     * @return array
+     */
+    public function selectByRevue(): array {
+        $query = "SELECT DISTINCT personne.per_nom, personne.per_titre, personne.personne_id FROM personne, personne_has_article, article WHERE  co_revue = :co_revue AND article.num_article = personne_has_article.num_article AND personne_has_article.personne_id = personne.personne_id;";
+        $result = $this->pdo->prepare($query);
+        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
+        $result->execute();
+        $per = $result->fetchAll();
+        return $per;
     }
 
     

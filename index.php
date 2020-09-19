@@ -76,22 +76,9 @@ function showRevue() {
 	$article->setCo_revue($_GET["co_revue"]);
 	$datas["articles"] = $article->selectByRevue();
 
-	$liaison = new PersonneHasArticle();
-	$pers_articles = [];
-	foreach($datas["articles"] as $art) {
-		$liaison->setNum_article($art['num_article']);
-		$results = $liaison->selectByArticle();
-		foreach($results as $res) {
-			array_push($pers_articles, $res);
-		}
-	}
-
 	$auteur = new Personne();
-	$datas["auteurs"] = [];
-	foreach($pers_articles as $per) {
-		$auteur->setPersonne_id($per['personne_id']);
-		array_push($datas["auteurs"], clone $auteur->select());
-	}
+	$auteur->setCo_revue($_GET["co_revue"]);
+	$datas["auteurs"] = $auteur->selectByRevue();
 
 	$rubrique = new Rubrique();
 	$rubrique->setCo_revue($_GET["co_revue"]);
