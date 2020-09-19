@@ -11,8 +11,6 @@ class Article extends DbConnect {
     private $srubrique_id;
     private $ssrubrique_id;
     
-
-
     public function getNum_article() {
         return $this->num_article;
     }
@@ -67,6 +65,15 @@ class Article extends DbConnect {
         $result = $this->pdo->prepare($query);
         $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->bindValue(":rubrique_id",$this->rubrique_id,PDO::PARAM_INT);
+        $result->execute();
+        $arts = $result->fetchAll();
+        return $arts;
+    }
+
+    public function selectByRevue(): array {
+        $query = "SELECT art_titre, num_article FROM article WHERE co_revue = :co_revue;";
+        $result = $this->pdo->prepare($query);
+        $result->bindValue(":co_revue",$this->co_revue,PDO::PARAM_STR);
         $result->execute();
         $arts = $result->fetchAll();
         return $arts;

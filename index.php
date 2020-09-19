@@ -72,10 +72,26 @@ function showRevue() {
 	$revue->selectById();
 	$datas['revue'] = clone $revue;
 
+	$article = new Article();
+	$article->setCo_revue($_GET["co_revue"]);
+	$datas["articles"] = $article->selectByRevue();
+
+	$liaison = new PersonneHasArticle();
+	$pers_articles = [];
+	foreach($datas["articles"] as $art) {
+		$liaison->setNum_article($art['num_article']);
+		$results = $liaison->selectByArticle();
+		foreach($results as $res) {
+			array_push($pers_articles, $res);
+		}
+	}
+
 	$auteur = new Personne();
-	$auteur->setCo_revue($_GET["co_revue"]);
-	$per = $auteur->selectByRevue();
-	$datas['auteurs'] = $per;
+	$datas["auteurs"] = [];
+	foreach($pers_articles as $per) {
+		$auteur->setPersonne_id($per['personne_id']);
+		array_push($datas["auteurs"], clone $auteur->select());
+	}
 
 	$rubrique = new Rubrique();
 	$rubrique->setCo_revue($_GET["co_revue"]);
@@ -95,6 +111,7 @@ function showArticle() {
 	$datas['revue'] = clone $revue;
 	
 	if(isset($_GET["personne_id"]) && isset($_GET["rubrique_id"])) {
+		var_dump("dernier cas");
 		foreach(showByRubAut() as $key => $entry) {
 			$datas[$key] = $entry;
 		}
@@ -107,13 +124,7 @@ function showArticle() {
 			$datas[$key] = $entry;
 		}
 	} else {
-		$per = new Personne();
-		$per->setCo_revue($_GET['co_revue']);
-		$datas['auteurs'] = $per->selectByRevue();
-
-		$rub = new Rubrique();
-		$rub->setCo_revue($_GET['co_revue']);
-		$datas['rubriques'] = $rub->selectByRevue();
+		
 	}
 
 	return ["template" => "views/the_articles.php", "datas" => $datas];
@@ -121,19 +132,14 @@ function showArticle() {
 
 function showByRubriques() {
 
-	// $auteur = new Personne();
-	// $auteur->setCo_revue($_GET["co_revue"]);
-
 	$rubrique = new Rubrique();
 	$rubrique->setRubrique_id($_GET["rubrique_id"]);
 	$rubrique->select();
-	var_dump($rubrique);
 
 	$article = new Article();
 	$article->setRubrique_id($rubrique->getRubrique_id());
 	$article->setCo_revue($_GET["co_revue"]);
 	$articles = $article->selectByRubrique();
-	var_dump($articles);
 
 	$liaison = new PersonneHasArticle();
 	$pers_articles = [];
@@ -151,10 +157,6 @@ function showByRubriques() {
 		$auteur->setPersonne_id($per['personne_id']);
 		array_push($auteurs, clone $auteur->select());
 	}
-	var_dump($auteurs);
-	// $auteur->setRubrique_id($_GET["rubrique_id"]);
-	// $auteur->setCo_revue($_GET["co_revue"]);
-	// $auteurs = $auteur->selectByRubrique();
 
 	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $articles];
 }

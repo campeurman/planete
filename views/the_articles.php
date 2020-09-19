@@ -1,5 +1,4 @@
 <?php
-var_dump($include['datas']);
 $revue = $include['datas']['revue'];
 $rubriques = $include['datas']['rubriques'] ?? null;
 $auteurs = $include['datas']['auteurs'] ?? null;
@@ -8,6 +7,7 @@ $auteur = $include['datas']['auteur'] ?? null;
 $articles = $include['datas']['articles'] ?? null;
 $article = $include['datas']['article'] ?? null;
 ?>
+
 <section id="revue">
     <div id="categories">
         <h2>Catégories</h2>
@@ -33,14 +33,13 @@ $article = $include['datas']['article'] ?? null;
         <h2>Articles</h2>
             <ul>
             <?php if(isset($article)): ?>
-                <?php var_dump($max) ?>
-                <li><?= $articles[1]->getArt_titre() ?></li>
-                <?php else: ?>
-                    <?php $max = sizeof($include['datas']['articles']); ?>
-                    <?php for($i=0; $i<$max; $i++): ?>
-                        <li><?= $articles[$i]->getArt_titre() ?></li>
-                    <?php endfor ?>
-                <?php endif ?>
+                <li><?= $article->getArt_titre() ?></li>
+            <?php else: ?>
+                <?php $max = sizeof($articles); ?>
+                <?php for($i=0; $i<$max; $i++): ?>
+                    <!-- <li><?= $articles[$i]['art_titre'] ?></li> -->
+                <?php endfor ?>
+            <?php endif ?>
             </ul>
         </div>
     </div>
@@ -48,12 +47,12 @@ $article = $include['datas']['article'] ?? null;
     <div id="auteurs">
         <h2>Auteurs</h2>
         <ul>
-        <?php if($auteur != null): ?>
+        <?php if(isset($auteur)): ?>
             <li><?= $auteur->getPer_titre() ?><?= $auteur->getPer_nom() ?></li>
         <?php else: ?>
-        <?php $max = sizeof($include['datas']['auteurs']); ?>
+        <?php $max = sizeof($auteurs); ?>
             <?php for($i=0; $i<$max; $i++): ?>
-                <li><a href='index.php?page=article&co_revue=<?= $include["datas"]["revue"]->getco_revue() ?>&personne_id=<?= $include['datas']['auteurs'][$i]['personne_id'] ?>'><?= $auteurs[$i]['per_titre'] ?><?= $auteurs[$i]['per_nom'] ?></a></li>
+                <li><a href='index.php?page=article&co_revue=<?= $revue->getco_revue() ?>&personne_id=<?= $auteurs[$i]->getPersonne_id() ?>'><?= $auteurs[$i]->getPer_titre() ?><?= $auteurs[$i]->getPer_nom() ?></a></li>
             <?php endfor ?>
         <?php endif ?>
         </ul>

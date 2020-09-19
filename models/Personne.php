@@ -13,6 +13,8 @@ class Personne extends DbConnect {
     private $per_sexe;
     private $per_bio;
 
+    private $co_revue;
+
     
     public function getPersonne_id() {
         return $this->personne_id;
@@ -70,6 +72,14 @@ class Personne extends DbConnect {
         $this->per_bio = $per_bio;
     }
 
+    public function getCo_revue() {
+        return $this->co_revue;
+    }
+
+    public function setCo_revue($code) {
+        $this->per_bio = $code;
+    }
+
     public function insert() {} 
 
     public function selectAll(){}
@@ -88,6 +98,7 @@ class Personne extends DbConnect {
         $this->per_titre = $per['per_titre'];
         return $this;
     }
+
     
     public function update(){}
 

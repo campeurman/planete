@@ -1,8 +1,17 @@
 <?php 
 class PersonneHasArticle extends DbConnect {
 
+    /**
+     * @var integer
+     */
     private $personne_id;
+    /**
+     * @var string
+     */
     private $num_article;
+    /**
+     * @var string
+     */
     private $co_revue;
 
     function getPersonne_id(): int {
