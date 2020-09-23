@@ -226,7 +226,7 @@ function showMembre() {
 		<header id="entete">
             <img src="image/planete-logo.png" alt="logo"><img src="image/planete-background-blancvert.jpg" id="flag" alt="logo">
         </header>
-		<div id="encadre">
+		<div id="encadre" class="sm-col lg-row">
 			<div id="menu">
 				<ul>
 					<li><a href="index.php?page=home">Accueil</a></li>
