@@ -6,21 +6,29 @@ $articles = $include['datas']['articles'] ?? null;
 $article = $include['datas']['article'] ?? null;
 ?>
 
-<section id="revue">
-    <div id="categories">
+<section id="revue" class="sm-col md-row">
+    <div id="categories" class="sm-col-12 md-col-4 lg-col-3">
         <h2>Catégories</h2>
         <ul>
             <li><?= $rubrique->getRub_nom() ?></li>
         </ul>
     </div>
-    <div id="infos">
-        <h2>PLANETE N°<?= $include["datas"]["revue"]->getRev_numero() ?></h2>
-        <p>date de parution : <?= $include["datas"]["revue"]->getRev_moiscouverts() ?><?= $include["datas"]["revue"]->getRev_dateparution() ?></p>
+    <div id="infos" class="sm-col-12 md-col-4 lg-col-6">
+        <h2>PLANETE N°<?= $revue->getRev_numero() ?></h2>
         <figure class="illustration">
-            <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
+            <figcaption>Date de parution : <?= $revue->getRev_moiscouverts() ?><?= $revue->getRev_dateparution() ?></figcaption>
+            <img src="<?= $revue->getRev_couv() ?>" alt="">
         </figure>
+    </div>
+    
+    <div id="auteurs" class="sm-col-12 md-col-4 lg-col-3">
+        <h2>Auteurs</h2>
+        <ul>
+            <li><?= $auteur->getPer_titre() ?><?= $auteur->getPer_nom() ?></li>
+        </ul>
+    </div>
 
-        <div id="articles">
+    <div id="articles" class="sm-col-12">
             <?php if(isset($article)): ?>
                 <h2><?= $article->getArt_Titre() ?></h2>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione, rem.</p> 
@@ -35,12 +43,4 @@ $article = $include['datas']['article'] ?? null;
                 </ul>
             <?php endif ?>
         </div>
-    </div>
-    
-    <div id="auteurs">
-        <h2>Auteurs</h2>
-        <ul>
-            <li><?= $auteur->getPer_titre() ?><?= $auteur->getPer_nom() ?></li>
-        </ul>
-    </div>
 </section>

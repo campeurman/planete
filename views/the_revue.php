@@ -5,8 +5,8 @@ $auteurs = $include['datas']['auteurs'] ?? null;
 $articles = $include['datas']['articles'] ?? null;
 ?>
 
-<section id="revue">
-    <div id="categories">
+<section id="revue" class="sm-col md-row">
+    <div id="categories" class="sm-col-12 md-col-4 lg-col-3">
         <h2>Catégories</h2>
         <ul>
             <?php 
@@ -16,23 +16,14 @@ $articles = $include['datas']['articles'] ?? null;
             <?php endfor ?>
         </ul>
     </div>
-    <div id="infos">
-        <h2>PLANETE N°<?= $include["datas"]["revue"]->getRev_numero() ?></h2>
-        <p>date de parution : <?= $include["datas"]["revue"]->getRev_moiscouverts() ?><?= $include["datas"]["revue"]->getRev_dateparution() ?></p>
+    <div id="infos" class="sm-col-12 md-col-4 lg-col-6">
+    <h2>PLANETE N°<?= $revue->getRev_numero() ?></h2>
         <figure class="illustration">
-            <img src="<?= $include["datas"]["revue"]->getRev_couv() ?>" alt="">
+            <figcaption>Date de parution : <?= $revue->getRev_moiscouverts() ?><?= $revue->getRev_dateparution() ?></figcaption>
+            <img src="<?= $revue->getRev_couv() ?>" alt="">
         </figure>
-        <!-- <div id="articles">
-            <h2>Articles</h2>
-            <ul>
-                <?php $max = sizeof($articles); ?>
-                <?php for($i=0; $i<$max; $i++): ?>
-                    <li><?= $articles[$i]['art_titre'] ?></li>
-                <?php endfor ?>
-            </ul>
-        </div> -->
     </div>
-    <div id="auteurs">
+    <div id="auteurs" class="sm-col-12 md-col-4 lg-col-3">
         <h2>Auteurs</h2>
         <ul>
         <?php $max = sizeof($include['datas']['auteurs']); ?>
@@ -41,4 +32,13 @@ $articles = $include['datas']['articles'] ?? null;
         <?php endfor ?>
         </ul>
     </div>
+    <!-- <div id="articles" class="sm-col-12">
+            <h2>Articles</h2>
+            <ul>
+            <?php $max = sizeof($articles); ?>
+                <?php for($i=0; $i<$max; $i++): ?>
+                    <li><?= $articles[$i]['art_titre'] ?></li>
+                <?php endfor ?>
+            </ul>
+        </div> -->
 </section>

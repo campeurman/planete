@@ -89,6 +89,12 @@ function showRevue() {
 	
 }
 
+/**
+ * Choix du template à insérer
+ * Choix de la fonction à appeller en fonction des paramètres transmis via GET
+ * Transfert des données ainsi récupérées vers l'affichage
+ * @return array
+ */
 function showArticle() {
 	
 	$datas = [];
@@ -125,6 +131,10 @@ function showArticle() {
 	return ["template" => "views/$template.php", "datas" => $datas];
 }
 
+/**
+ * Récupère et renvoie les données lors de la sélection d'une rubrique
+ * @return array
+ */
 function showByRubriques() {
 
 	$rubrique = new Rubrique();
@@ -142,20 +152,25 @@ function showByRubriques() {
 		$liaison->setNum_article($art['num_article']);
 		$results = $liaison->selectByArticle();
 		foreach($results as $res) {
-			array_push($pers_articles, $res);
+			array_push($pers_articles, $res["personne_id"]);
 		}
 	}
+	$pers_articles = array_unique($pers_articles);
 
-	$auteur = new personne();
+	$auteur = new Personne();
 	$auteurs = [];
 	foreach($pers_articles as $per) {
-		$auteur->setPersonne_id($per['personne_id']);
+		$auteur->setPersonne_id($per);
 		array_push($auteurs, clone $auteur->select());
 	}
 
 	return ["rubrique" => $rubrique, "auteurs" => $auteurs, "articles" => $articles];
 }
 
+/**
+ * Récupère et renvoie les données lors de la sélection d'un auteur
+ * @return array
+ */
 function showByAuteurs() {
 
 	$per = new Personne();
@@ -169,21 +184,28 @@ function showByAuteurs() {
 	
 	$article = new Article();
 	$articles = [];
+	$ids_rubriques = [];
 	foreach($pers_articles as $art) {
 		$article->setNum_article($art['num_article']);
 		array_push($articles, clone $article->select());
+		array_push($ids_rubriques, $article->getRubrique_id());
 	}
+	$ids_rubriques = array_unique($ids_rubriques);
 
 	$rubrique = new Rubrique();
 	$rubriques = [];
-	foreach($articles as $art) {
-		$rubrique->setRubrique_id($art->getRubrique_id());
+	foreach($ids_rubriques as $id) {
+		$rubrique->setRubrique_id($id);
 		array_push($rubriques, clone $rubrique->select());
 	}
 
 	return ["rubriques" => $rubriques, "auteur" => $auteur, "articles" => $articles];
 }
 
+/**
+ * Récupère et renvoie les données lors de la sélection d'un auteur ET d'une rubrique (articles intersection)
+ * @return array
+ */
 function showByRubAut() {
 
 	$rubrique = new Rubrique();
